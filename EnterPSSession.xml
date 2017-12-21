@@ -1,0 +1,70 @@
+<ActionDescription Class="Group" DisplayName="PowerShell tasks" MnemonicDisplayName="PowerShell tasks" Description="PowerShell tasks">
+    <ShowOn>
+        <string>DefaultHomeTab</string>
+        <string>ContextMenu</string>
+    </ShowOn>
+    <ImagesDescription>
+        <ResourceAssembly>
+            <Assembly>AdminUI.UIResources.dll</Assembly>
+            <Type>Microsoft.ConfigurationManagement.AdminConsole.UIResources.Properties.Resources.resources</Type>
+        </ResourceAssembly>
+        <ImageResourceName>GPSIcon</ImageResourceName>
+    </ImagesDescription>
+    <ActionGroups>
+        <ActionDescription Class="Executable" DisplayName="Remote PowerShell" MnemonicDisplayName="Remote PowerShell" Description="PS: Enter-PSSession">
+            <ShowOn>
+                <string>DefaultHomeTab</string>
+                <string>ContextMenu</string>
+            </ShowOn>
+            <ImagesDescription>
+                <ResourceAssembly>
+                    <Assembly>AdminUI.UIResources.dll</Assembly>
+                    <Type>Microsoft.ConfigurationManagement.AdminConsole.UIResources.Properties.Resources.resources</Type>
+                </ResourceAssembly>
+                <ImageResourceName>GPSIcon</ImageResourceName>
+            </ImagesDescription>
+            <Executable>
+                <FilePath>C:\Windows\Sysnative\WindowsPowerShell\v1.0\powershell.exe</FilePath>
+                <Parameters>-ExecutionPolicy Bypass -NoExit -File #PATH# -Option "RemotePS" -SiteServer #SERVER# -hostname ##SUB:Name## -Verbose</Parameters>
+            </Executable>
+        </ActionDescription>
+    </ActionGroups>
+    <ActionGroups>
+        <ActionDescription Class="Executable" DisplayName="Test connection" MnemonicDisplayName="Test connection" Description="Ping with PowerShell">
+            <ShowOn>
+                <string>DefaultHomeTab</string>
+                <string>ContextMenu</string>
+            </ShowOn>
+            <ImagesDescription>
+                <ResourceAssembly>
+                    <Assembly>AdminUI.UIResources.dll</Assembly>
+                    <Type>Microsoft.ConfigurationManagement.AdminConsole.UIResources.Properties.Resources.resources</Type>
+                </ResourceAssembly>
+                <ImageResourceName>RLS_Interim</ImageResourceName>
+            </ImagesDescription>
+            <Executable>
+                <FilePath>C:\Windows\Sysnative\WindowsPowerShell\v1.0\powershell.exe</FilePath>
+                <Parameters>-ExecutionPolicy Bypass -NoExit Test-Connection -ComputerName ##SUB:Name##</Parameters>
+            </Executable>
+        </ActionDescription>
+    </ActionGroups>
+    <ActionGroups>
+        <ActionDescription Class="Executable" DisplayName="Test connection from server" MnemonicDisplayName="Test connection from server" Description="Ping with PowerShell from server in DC network">
+            <ShowOn>
+                <string>DefaultHomeTab</string>
+                <string>ContextMenu</string>
+            </ShowOn>
+            <ImagesDescription>
+                <ResourceAssembly>
+                    <Assembly>AdminUI.UIResources.dll</Assembly>
+                    <Type>Microsoft.ConfigurationManagement.AdminConsole.UIResources.Properties.Resources.resources</Type>
+                </ResourceAssembly>
+                <ImageResourceName>SQLReplicationInterim</ImageResourceName>
+            </ImagesDescription>
+            <Executable>
+                <FilePath>C:\Windows\Sysnative\WindowsPowerShell\v1.0\powershell.exe</FilePath>
+                <Parameters>-ExecutionPolicy Bypass -NoExit -File #PATH# -Option "TestConn" -SiteServer #SERVER# -hostname ##SUB:Name## -Verbose</Parameters>
+            </Executable>
+        </ActionDescription>
+    </ActionGroups>
+</ActionDescription>
