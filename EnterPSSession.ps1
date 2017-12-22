@@ -25,6 +25,13 @@ Param (
     [string]$SiteServer
 )
 
+# Name of the user with administrative privileges on workstation
+$WKADMUSER = 'pc-admin'
+# Name of the user with rights to run scripts on the SCCM server
+$SRVADMUSER = 'sccm-admin'
+# NetBIOS domain name
+$USERDOMAIN = 'Contoso'
+
 function GetUserCred {
 Param(
     [parameter(Mandatory=$true)]
@@ -34,11 +41,11 @@ Param(
     $FILE = "$Env:HOMEDRIVE$Env:HOMEPATH\$username.password"
     if ((Test-Path $FILE) -eq $false)
     {
-        Read-Host -Prompt "CZ\$username password (will be encrypted into file $FILE)" -AsSecureString | ConvertFrom-SecureString | Out-File $FILE -Force
+        Read-Host -Prompt "$USERDOMAIN\$username password (will be encrypted into file $FILE)" -AsSecureString | ConvertFrom-SecureString | Out-File $FILE -Force
     }
     Write-Verbose -Message "Reading credentials from file $FILE..."
     $pwd = Get-Content $FILE | ConvertTo-SecureString
-    $crd = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList "cz\$username", $pwd
+    $crd = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList "$USERDOMAIN\$username", $pwd
     Write-Verbose -Message "Created PSCredentials object"
     return $crd
 }
@@ -48,7 +55,7 @@ switch ($Option) {
         Write-Verbose -Message "Testing connection to $hostname..."
         if ((Test-Connection -ComputerName $hostname -Count 2 -Quiet) -eq $true) {
             Write-Verbose -Message "Connection is OK, creating new remote session..."
-            $Session = New-PSSession $hostname -Credential (GetUserCred "wkadm") -Authentication Kerberos 
+            $Session = New-PSSession $hostname -Credential (GetUserCred $WKADMUSER) -Authentication Kerberos 
             Enter-PSSession -Session $Session
             Write-Verbose -Message "Remote session connected"
             Invoke-Command -Session $Session -ScriptBlock {Get-WmiObject -Class Win32_ComputerSystem | Select-Object username}
@@ -58,11 +65,11 @@ switch ($Option) {
     }
     "TestConn" {
         Write-Verbose -Message "Testing connection to $hostname from server $SiteServer..."
-        Test-Connection -Source $SiteServer -Credential (GetUserCred "srvadm") -ComputerName $hostname
+        Test-Connection -Source $SiteServer -Credential (GetUserCred $SRVADMUSER) -ComputerName $hostname
         Write-Verbose -Message "Testing connection to $hostname from this host..."
         if (Test-Connection -ComputerName $hostname -Count 2 -Quiet) {
             Write-Host "Logged-on " -NoNewline
-            Get-WmiObject -ComputerName $hostname -Credential (GetUserCred "wkadm") -Class Win32_ComputerSystem | Select-Object username
+            Get-WmiObject -ComputerName $hostname -Credential (GetUserCred $WKADMUSER) -Class Win32_ComputerSystem | Select-Object username
         }
     }
 }
